@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}All words{% endblock %}
+
+{% block content %}
+<h1>All words</h1>
+<p><a href="{% url 'dictionary:add_word' %}">Add a new word</a></p>
+<ul>
+    {% for word in words %}
+        <li><p>{{ word.word }}</p> <a href="{% url 'dictionary:word_detail' word.id %}">See word</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

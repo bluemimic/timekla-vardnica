@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="{% if update %}{% url 'dictionary:edit_word' word_form.instance.pk %}{% else %}{% url 'dictionary:add_word' %}{% endif %}" method="post">
+    {% csrf_token %}
+    {{ word_form.as_div }}
+    {{ hint_form.as_div }}
+    {{ translation_form.as_div }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

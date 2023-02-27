@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ language.language }}{% endblock %}
+
+{% block content %}
+<h1>{{ language.language_name }}</h1>
+<p>Added: {{ language.date_added }}</p>
+<a href="{% url 'dictionary:edit_language' language.id %}">Edit</a>
+<a href="{% url 'dictionary:delete_language' language.id %}">Delete</a>
+{% endblock %}

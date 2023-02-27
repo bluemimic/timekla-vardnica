@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ word.word }}{% endblock %}
+
+{% block content %}
+<h1>{{ word.word }}</h1>
+<hr>
+<h3>Description</h3>
+<p>{{ word.description }}</p>
+<hr>
+<h3>Translations</h3>
+<ul>
+    {% for translation in translations %}
+        <li><p>{{ translation.translation }}</p></li>
+    {% endfor %}
+</ul>
+<hr>
+<h3>Hints</h3>
+<ul>
+    {% for hint in hints %}
+        <li><p>{{ hint.hint }}</p></li>
+    {% endfor %}
+</ul>
+<hr>
+<a href="{% url 'dictionary:edit_word' word.id %}">Edit</a>
+<a href="{% url 'dictionary:delete_word' word.id %}">Delete</a>
+{% endblock %}

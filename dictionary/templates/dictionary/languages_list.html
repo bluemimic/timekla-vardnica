@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}All words{% endblock %}
+
+{% block content %}
+<h1>All languages</h1>
+<p><a href="{% url 'dictionary:add_language' %}">Add a new language</a></p>
+<ul>
+    {% for language in languages %}
+        <li><p>{{ language.language_name }}</p> <a href="{% url 'dictionary:language_detail' language.id %}">See language</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

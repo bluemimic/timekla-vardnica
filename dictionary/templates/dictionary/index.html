@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Your dictionary{% endblock %}
+
+{% block content %}
+<h6>Welcome, {{ user.username }}</h6>
+<a href="{% url 'logout' %}">Logout</a>
+<hr>
+
+<h1>Your languages</h1>
+<ul>
+    {% for language in languages %}
+    <li>{{ language.language_name }} <a href="{% url 'dictionary:language_detail' language.id %}">See detail</a></li>
+    {% endfor %}
+</ul>
+<hr>
+<h1>Your recent words</h1>
+<ul>
+    {% for word in recent_words %}
+    <li>{{ word.word }}, added: {{ word.date_added }} <a href="{% url 'dictionary:word_detail' word.id %}">See detail</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="{% if update %}{% url 'dictionary:edit_language' language_form.instance.pk %}{% else %}{% url 'dictionary:add_language' %}{% endif %}" method="post">
+    {% csrf_token %}
+    {{ language_form.as_div }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

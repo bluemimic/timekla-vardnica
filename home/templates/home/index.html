@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<ul>
+    <li><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+
+    <hr>
+
+    <li><a href="{% url 'dictionary:words_list' %}">All words</a></li>
+    <li><a href="{% url 'dictionary:languages_list' %}">All languages</a></li>
+</ul>
+{% else %}
+<h1>Welcome to the online dictionary site!</h1>
+<a href="{% url 'login' %}">Login</a>
+<br>
+<a href="{% url 'sign_up' %}">Sign up</a>
+{% endif %}
+{% endblock %}
