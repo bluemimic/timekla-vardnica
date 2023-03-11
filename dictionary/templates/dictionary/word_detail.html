@@ -1,27 +1,105 @@
 {% extends "base.html" %}
+{% load humanize %}
 
-{% block title %}{{ word.word }}{% endblock %}
+{% block title %}Word: {{ word.word|title }}{% endblock %}
 
 {% block content %}
-<h1>{{ word.word }}</h1>
-<hr>
-<h3>Description</h3>
-<p>{{ word.description }}</p>
-<hr>
-<h3>Translations</h3>
-<ul>
-    {% for translation in translations %}
-        <li><p>{{ translation.translation }}</p></li>
-    {% endfor %}
-</ul>
-<hr>
-<h3>Hints</h3>
-<ul>
-    {% for hint in hints %}
-        <li><p>{{ hint.hint }}</p></li>
-    {% endfor %}
-</ul>
-<hr>
-<a href="{% url 'dictionary:edit_word' word.id %}">Edit</a>
-<a href="{% url 'dictionary:delete_word' word.id %}">Delete</a>
+<div class="container mb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dictionary:words_list' %}">All words</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Word: {{ word.word }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-3">{{ word.word|title }} ({{ translations|first }})</h2>
+    <p><span class="badge text-bg-secondary">Added: {{ word.date_added|naturaltime }}</span></p>
+
+    <hr>
+
+    <div class="accordion mb-3" id="wordAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="translations">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    Translations
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="translations"
+                data-bs-parent="#wordAccordion">
+                <div class="accordion-body">
+                    You translated the word as <b>{% for translation in translations %}{{ translation.translation }}{% if not forloop.last %},{% endif %}{% endfor %}.</b>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="description">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Description
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="description"
+                data-bs-parent="#wordAccordion">
+                <div class="accordion-body">
+                    Your described that word as <b>{{ word.description }}.</b>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="hint">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Hints
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="hint"
+                data-bs-parent="#wordAccordion">
+                <div class="accordion-body">
+                    You created following hints to the word:
+                    <ol class="list-group list-group-flush list-group-numbered">
+                        {% for hint in hints %}
+                        <li class="list-group-item"><b>{{ hint.hint }}</b></li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'dictionary:edit_word' word.id %}" class="btn btn-primary">Edit</a>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWordModal">
+            Delete
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteWordModal" tabindex="-1" data-bs-backdrop="static"
+            aria-labelledby="deleteWordModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteWordModal">Are you sure you want to delete the word {{
+                            word.word }}?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        This action will permanently delete the word and all associated translations and hints! This
+                        action is irreversible!
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'dictionary:delete_word' word.id %}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

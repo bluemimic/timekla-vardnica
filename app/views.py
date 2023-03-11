@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from app.utils import bootstrapify_form
+
 
 def sign_up(request):
     """
@@ -26,4 +28,6 @@ def sign_up(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'registration/signup.html', {'form': form})
+    print(UserCreationForm)
+
+    return render(request, 'registration/signup.html', {'form': bootstrapify_form(form)})

@@ -8,6 +8,7 @@ from django.urls import reverse
 from .models import Hint, Language, Translation, Word
 from .forms import LanguageForm, WordForm, HintForm, TranslationForm
 
+from app.utils import bootstrapify_form
 
 PAGINATOR_PER_PAGE = 20
 RECENT_WORD_COUNT = 20
@@ -155,9 +156,9 @@ def add_word(request):
         request,
         'dictionary/add_word.html',
         {
-            'word_form': word_form,
-            'hint_form': hint_form,
-            'translation_form': translation_form,
+            'word_form': bootstrapify_form(word_form),
+            'hint_form': bootstrapify_form(hint_form),
+            'translation_form': bootstrapify_form(translation_form),
         }
     )
 
@@ -189,7 +190,7 @@ def add_language(request):
         request,
         'dictionary/add_language.html',
         {
-            'language_form': language_form,
+            'language_form': bootstrapify_form(language_form),
         }
     )
 
@@ -233,9 +234,9 @@ def edit_word(request, word_id: int):
         request,
         'dictionary/add_word.html',
         {
-            'word_form': word_form,
-            'hint_form': hint_form,
-            'translation_form': translation_form,
+            'word_form': bootstrapify_form(word_form),
+            'hint_form': bootstrapify_form(hint_form),
+            'translation_form': bootstrapify_form(translation_form),
             'update': True,
         }
     )
@@ -269,7 +270,7 @@ def edit_language(request, language_id: int):
         request,
         'dictionary/add_language.html',
         {
-            'language_form': language_form,
+            'language_form': bootstrapify_form(language_form),
             'update': True,
         }
     )

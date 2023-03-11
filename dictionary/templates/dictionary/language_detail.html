@@ -1,10 +1,48 @@
 {% extends "base.html" %}
+{% load humanize %}
 
-{% block title %}{{ language.language }}{% endblock %}
+{% block title %}Language: {{ language.language|title }}{% endblock %}
 
 {% block content %}
-<h1>{{ language.language_name }}</h1>
-<p>Added: {{ language.date_added }}</p>
-<a href="{% url 'dictionary:edit_language' language.id %}">Edit</a>
-<a href="{% url 'dictionary:delete_language' language.id %}">Delete</a>
+<div class="container mb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:languages_list' %}">All languages</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Language: {{ language.language_name }}</li>
+        </ol>
+    </nav>
+    
+    <h2 class="mb-3">{{ language.language_name|title }}</h2>
+    <p><span class="badge text-bg-secondary">Added: {{ language.date_added|naturaltime }}</span></p>
+    <hr>
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'dictionary:edit_language' language.id %}" class="btn btn-primary">Edit</a>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteLanguageModal">
+            Delete
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteLanguageModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="deleteLanguageModal" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteLanguageModal">Are you sure you want to delete the {{ language.language_name }} language?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        This action will permanently delete all words, translations and hints associated with the language! This action is irreversible!
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'dictionary:delete_language' language.id %}" class="btn btn-danger">Delete</a>
+                    </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,37 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container mb-3">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
+    {% if next %}
+        {% if user.is_authenticated %}
+        <div class="alert alert-primary" role="alert">
+            Your account doesn't have access to this page. To proceed, please login with an account that has access.
+        </div>
+        {% else %}
+        <div class="alert alert-primary" role="alert">
+            Please login to see this page.
+        </div>
+        {% endif %}
     {% endif %}
-{% endif %}
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    {% if form.non_field_errors %}
+        <ul class="list-group mb-3">
+        {% for error in form.non_field_errors %}
+            <li class="list-group-item list-group-item-danger">{{ error|escape }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            {{ field }}
+            {% if field.help_text %}
+            <p class="form-text">{{ field.help_text|safe }}</p>
+            {% if field.errors %}
+                <ul class="list-group mb-3">
+                {% for error in field.errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error|escape }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endif %}
+        </div>
+    {% endfor %}
+    <div class="d-flex justify-content-between">
+        <input type="submit" value="Login" class="btn btn-primary me-3">
+        <input type="hidden" name="next" value="{{ next }}">
+        <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary">Forgot password?</a>
+    </div>
+    </form>
 
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
+</div>
 {% endblock %}

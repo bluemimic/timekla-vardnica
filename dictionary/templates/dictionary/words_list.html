@@ -1,13 +1,60 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}All words{% endblock %}
 
 {% block content %}
-<h1>All words</h1>
-<p><a href="{% url 'dictionary:add_word' %}">Add a new word</a></p>
-<ul>
-    {% for word in words %}
-        <li><p>{{ word.word }}</p> <a href="{% url 'dictionary:word_detail' word.id %}">See word</a></li>
-    {% endfor %}
-</ul>
+<div class="container mb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+          <li class="breadcrumb-item active" aria-current="page">All words</li>
+        </ol>
+    </nav>
+    
+    <h2 class="mb-3">All words</h2>
+    <div class="list-group">
+        {% for word in words %}
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <p class="mb-0 align-self-center"><b>{{ word.word|title }} ({{ word.translations.first.translation }})</b></p>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'dictionary:word_detail' word.id %}" class="btn btn-primary">See</a>
+                    <a href="{% url 'dictionary:edit_word' word.id %}" class="btn btn-primary">Edit</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWordModal{{forloop.counter}}">
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="deleteWordModal{{forloop.counter}}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="deleteWordModal{{forloop.counter}}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="deleteWordModal{{forloop.counter}}">Are you sure you want to delete the word {{ word.word }}?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <div class="modal-body">
+                            This action will permanently delete the word and all associated translations and hints! This action is irreversible!
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                            <a href="{% url 'dictionary:delete_word' word.id %}" class="btn btn-danger">Delete</a>
+                        </div>
+                  </div>
+                </div>
+            </div>
+        </li>
+
+        {% endfor %}
+        <li class="list-group-item mb-3">
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'dictionary:add_word' %}" class="text-success text-decoration-none"><i class="bi bi-plus"></i> Add new</a>
+            </div>
+        </li>
+    </div>
+</div>
 {% endblock %}
