@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Add new language{% endblock %}
+{% block title %}Add words from a file{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -8,14 +8,14 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
           <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'dictionary:languages_list' %}">All languages</a></li>
-          <li class="breadcrumb-item active" aria-current="page">{% if update %}Edit{% else %}Add new{% endif %} language</li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:words_list' %}">All words</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Add words from a file</li>
         </ol>
     </nav>
 
-    <form action="{% if update %}{% url 'dictionary:edit_language' language_form.instance.pk %}{% else %}{% url 'dictionary:add_language' %}{% endif %}" method="post">
+    <form enctype="multipart/form-data" action="{% url 'dictionary:add_words_from_file' %}" method="post">
         {% csrf_token %}
-        {% for field in language_form %}
+        {% for field in dictionary_file_form %}
             <div class="mb-3">
                 <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
                 {{ field }}
@@ -31,7 +31,7 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <input type="submit" value="{% if update %}Edit{% else %}Add{% endif %}" class="btn btn-primary">
+        <input type="submit" value="Proceed" class="btn btn-primary">
     </form>
 </div>
 {% endblock %}

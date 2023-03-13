@@ -16,6 +16,7 @@ urlpatterns = [
 
     # Add items views
     path('words/add/', views.add_word, name='add_word'),
+    path('words/add/from_file/', views.add_words_from_file, name='add_words_from_file'),
     path('languages/add/', views.add_language, name='add_language'),
 
     # Edit items views
