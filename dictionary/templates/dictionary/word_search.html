@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load humanize %}
 
-{% block title %}All words{% endblock %}
+{% block title %}Word search: {{ search_query }}{% endblock %}
 
 {% block content %}
 <div class="container mb-3">
@@ -9,11 +9,13 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
           <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
-          <li class="breadcrumb-item active" aria-current="page">All words</li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:words_list' %}">All words</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Word search: {{ search_query }}</li>
         </ol>
     </nav>
 
-    <h2 class="mb-3">All words</h2>
+    <h2 class="mb-3">Search result for {{ search_query }}</h2>
+    {% if words %}
     <div class="list-group mb-3">
         {% for word in words %}
         <li class="list-group-item">
@@ -50,19 +52,12 @@
         </li>
 
         {% endfor %}
-        <li class="list-group-item">
-            <div class="d-flex justify-content-center">
-                <a href="{% url 'dictionary:add_word' %}" class="text-success text-decoration-none"><i class="bi bi-plus"></i> Add new</a>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <div class="d-flex justify-content-center">
-                <a href="{% url 'dictionary:add_words_from_file' %}" class="text-success text-decoration-none"><i class="bi bi-plus"></i> Add words from file</a>
-            </div>
-        </li>
     </div>
-    {% if words %}
-    {% include "snippets/pagination_snippet.html" with page=words only %}
+    {% include "snippets/pagination_snippet.html" with page=words postfix=postfix only %}
+    {% else %}
+    <div class="alert alert-primary mb-3" role="alert">
+        No words was found with the given query!
+    </div>
     {% endif %}
 </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.core.exceptions import PermissionDenied, NON_FIELD_ERRORS
+from django.core.exceptions import PermissionDenied, NON_FIELD_ERRORS, SuspiciousOperation
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.forms import ValidationError
@@ -6,13 +6,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.db import transaction
+from django.views.decorators.http import require_GET
 
 from django.conf import settings as stg
 
 from app.utils import bootstrapify_form
 
 from .models import Hint, Language, Translation, Word
-from .forms import DictionaryFileForm, LanguageForm, WordForm, HintForm, TranslationForm
+from .forms import DictionaryFileForm, LanguageForm, SearchForm, WordForm, HintForm, TranslationForm
 
 import io
 import pandas as pd
@@ -424,3 +425,38 @@ def delete_language(request, language_id: int):
     language.delete()
 
     return HttpResponseRedirect(reverse('dictionary:languages_list'))
+
+
+@require_GET
+@login_required
+def search_words(request):
+    """
+    URL: /dictionary/words/search/
+    Searches words by the GET request given.
+    """
+
+    search_input_name = 'word'
+    search_form = SearchForm(request.GET)
+
+    if search_form.is_valid():
+        search_query = search_form.cleaned_data.get(search_input_name)
+        search_results = Word.objects.filter(user=request.user, word__icontains=search_query).order_by('-date_added')
+        
+        paginator = Paginator(search_results, stg.PAGINATOR_PER_PAGE)
+        page_number = request.GET.get('page')
+
+        # get_page returns a valid page even if a page_number value is not valid
+        page_obj = paginator.get_page(page_number)
+
+        return render(
+            request,
+            'dictionary/word_search.html',
+            {
+                'search_query': search_query,
+                'words': page_obj,
+                'postfix': f'&{ search_input_name }={ search_query }'
+            }
+        )
+
+    else:
+        raise SuspiciousOperation

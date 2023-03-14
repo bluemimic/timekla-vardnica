@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Form, FileField, ValidationError
+from django.forms import CharField, ModelForm, Form, FileField
 from django.core.validators import FileExtensionValidator
 
 from dictionary.validators import FileSizeValidator
@@ -67,3 +67,7 @@ class DictionaryFileForm(Form):
             FileSizeValidator(max_size=2_500_000),
         ],
     )
+
+
+class SearchForm(Form):
+    word = CharField(max_length=150)

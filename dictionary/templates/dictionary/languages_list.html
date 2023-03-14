@@ -55,5 +55,8 @@
             </div>
         </li>
     </div>
+    {% if languages %}
+    {% include "snippets/pagination_snippet.html" with page=languages only %}
+    {% endif %}
 </div>
 {% endblock %}
