@@ -26,7 +26,7 @@ urlpatterns = [
     # Delete items views
     path('words/delete/<int:word_id>', views.delete_word, name='delete_word'),
     path('languages/delete/<int:language_id>', views.delete_language, name='delete_language'),
-    
+
     # Search items
     path('words/search', views.search_words, name='words_search'),
 ]

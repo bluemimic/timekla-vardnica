@@ -9,11 +9,30 @@ from .models import Word, Hint, Translation, Language
 class WordForm(ModelForm):
     def __init__(self, current_user, *args, **kargs):
         super().__init__(*args, **kargs)
+        self.current_user = current_user
         self.fields['word_language'].queryset = Language.objects.filter(user=current_user)
 
     class Meta:
         model = Word
         fields = ['word', 'word_language', 'description']
+
+    def clean(self):
+        """Function that validates that the user cannot create a word that already exists"""
+
+        cleaned_data = super().clean()
+        word = cleaned_data.get("word")
+        word_language = cleaned_data.get("word_language")
+
+        # Only do something if field is valid so far
+        if word:
+            try:
+                Word.objects.get(user=self.current_user, word__iexact=word, word_language=word_language)
+                self.add_error('word', "That word already exists!")
+
+            except Word.DoesNotExist:
+                pass
+
+        return cleaned_data
 
 
 class HintForm(ModelForm):
