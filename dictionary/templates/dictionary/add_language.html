@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Add new language{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:languages_list' %}">All languages</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{% if update %}Edit{% else %}Add new{% endif %} language</li>
+        </ol>
+    </nav>
+
+    <form action="{% if update %}{% url 'dictionary:edit_language' language_form.instance.pk %}{% else %}{% url 'dictionary:add_language' %}{% endif %}" method="post">
+        {% csrf_token %}
+        {% for field in language_form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="form-text">{{ field.help_text|safe }}</p>
+                {% endif %}
+                {% if field.errors %}
+                    <ul class="list-group mb-3 mt-3">
+                    {% for error in field.errors %}
+                        <li class="list-group-item list-group-item-danger">{{ error|escape }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input type="submit" value="{% if update %}Edit{% else %}Add{% endif %}" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mb-3">
+    <form action="{% url 'sign_up' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="form-text">{{ field.help_text|safe }}</p>
+                {% if field.errors %}
+                    <ul class="list-group mb-3">
+                    {% for error in field.errors %}
+                        <li class="list-group-item list-group-item-danger">{{ error|escape }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <h2>Welcome, {{ user.username }} </h2>
+    <hr>
+    <div class="list-group">
+        <a href="{% url 'dictionary:index' %}" class="list-group-item list-group-item-action"><i class="bi bi-journal-check"></i> Your dictionary</a>
+        <a href="{% url 'dictionary:words_list' %}" class="list-group-item list-group-item-action"><i class="bi bi-list-check"></i> All words</a>
+        <a href="{% url 'dictionary:languages_list' %}" class="list-group-item list-group-item-action"><i class="bi bi-translate"></i> All languages</a>
+    </div>
+    {% else %}
+    <h1 class="display-3 text-center">Welcome to the online dictionary site!</h1>
+    <hr>
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'login' %}" class="btn btn-outline-primary me-3">Login</a>
+        <a href="{% url 'sign_up' %}" class="btn btn-outline-primary">Sign up</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

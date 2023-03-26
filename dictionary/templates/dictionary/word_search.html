@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Word search: {{ search_query }}{% endblock %}
+
+{% block content %}
+<div class="container mb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:index' %}">Your dictionary</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'dictionary:words_list' %}">All words</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Word search: {{ search_query }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-3">Search result for {{ search_query }}</h2>
+    {% if words %}
+    <div class="list-group mb-3">
+        {% for word in words %}
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <p class="mb-0 align-self-center"><b>{{ word.word|title }} ({{ word.translations.first.translation }})</b></p>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'dictionary:word_detail' word.id %}" class="btn btn-primary">See</a>
+                    <a href="{% url 'dictionary:edit_word' word.id %}" class="btn btn-primary">Edit</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWordModal{{forloop.counter}}">
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="deleteWordModal{{forloop.counter}}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="deleteWordModal{{forloop.counter}}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="deleteWordModal{{forloop.counter}}">Are you sure you want to delete the word {{ word.word }}?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            This action will permanently delete the word and all associated translations and hints! This action is irreversible!
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                            <a href="{% url 'dictionary:delete_word' word.id %}" class="btn btn-danger">Delete</a>
+                        </div>
+                  </div>
+                </div>
+            </div>
+        </li>
+
+        {% endfor %}
+    </div>
+    {% include "snippets/pagination_snippet.html" with page=words postfix=postfix only %}
+    {% else %}
+    <div class="alert alert-primary mb-3" role="alert">
+        No words was found with the given query!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
